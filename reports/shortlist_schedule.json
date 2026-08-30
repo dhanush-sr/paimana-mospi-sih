@@ -1,0 +1,19 @@
+{
+ "month": "2026-07",
+ "target": "schedule",
+ "pool": 1775,
+ "bands": {
+  "WATCH": 932,
+  "CALM": 734,
+  "ABSTAIN": 87,
+  "FLAG": 22
+ },
+ "savable": 811,
+ "shortlist": 50,
+ "thresholds": {
+  "flag": 0.822008561323226,
+  "watch": 0.2644959791405043
+ },
+ "shortlist_exposure_cr": 24853.973853895088,
+ "shortlist_unspent_cr": 46990.54
+}

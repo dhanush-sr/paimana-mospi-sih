@@ -1,0 +1,24 @@
+{
+ "target": "schedule",
+ "split": "2026-04",
+ "n_train": 10842,
+ "n_test": 5516,
+ "base_rate_train": 0.29865338498432026,
+ "base_rate_test": 0.2632342277012328,
+ "roc_auc": 0.8792426377681614,
+ "roc_auc_calibrated": 0.8819344177729334,
+ "pr_auc": 0.7212890428056029,
+ "ece_uncalibrated": 0.09850362789022021,
+ "ece_calibrated": 0.09759843748765823,
+ "precision_at_50": 0.94,
+ "precision_at_100": 0.93,
+ "precision_at_200": 0.905,
+ "baseline_overdue_auc": 0.4715634557818702,
+ "baseline_prior_revs_auc": 0.6789565980130582,
+ "leaky_demo": {
+  "r2": 1.0,
+  "coef_original_end_date": -1.0000000000000018,
+  "coef_revised_date": 1.0000000000000007
+ },
+ "within_regime_auc": 0.8905817174515236
+}

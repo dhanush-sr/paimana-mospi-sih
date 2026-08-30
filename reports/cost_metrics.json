@@ -1,0 +1,24 @@
+{
+ "target": "cost",
+ "split": "2026-04",
+ "n_train": 10842,
+ "n_test": 5516,
+ "base_rate_train": 0.012912746725696367,
+ "base_rate_test": 0.05348078317621465,
+ "roc_auc": 0.9124630322783802,
+ "roc_auc_calibrated": 0.812976278977662,
+ "pr_auc": 0.2681701749770176,
+ "ece_uncalibrated": 0.05279296560676817,
+ "ece_calibrated": 0.04204581524578613,
+ "precision_at_50": 0.16,
+ "precision_at_100": 0.23,
+ "precision_at_200": 0.26,
+ "baseline_overdue_auc": 0.5792532763708491,
+ "baseline_prior_revs_auc": 0.4361473709497823,
+ "leaky_demo": {
+  "r2": 1.0,
+  "coef_original_end_date": -1.0000000000000018,
+  "coef_revised_date": 1.0000000000000007
+ },
+ "within_regime_auc": 0.9945178789731052
+}
