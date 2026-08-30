@@ -18,3 +18,17 @@ ui/out/
 *.tsbuildinfo
 
 .DS_Store
+
+# --- Flash Report corpus: ~2 GB of MoSPI PDFs, NEVER commit ---
+# GitHub hard-blocks files >100 MB and LFS free tier is 1 GB. The corpus is
+# fully reproducible: flash_pdf/download_all.py + fill_gaps.py rebuild it from
+# the URLs in data/flash_reports/manifest_all.csv.
+files/
+**/FR_*.pdf
+**/FlashReport*.pdf
+*.jsonl
+data/flash_reports/*.jsonl
+# full parquet keeps the raw audit column (~46 MB); shared via zip, not git
+flash_report_rows.parquet
+# superseded regex-era extraction
+records.csv

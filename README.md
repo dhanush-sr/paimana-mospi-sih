@@ -5,6 +5,32 @@
 
 *Predict the revision before it is filed.*
 
+
+## Flash Report corpus & India map (added by Vismay)
+
+**Want to see the map? Open `docs/india_map_preview.html` in a browser. Nothing to install.**
+
+| what | where |
+|---|---|
+| How to use the map (3 ways, simplest first) | `components/map/QUICKSTART.md` |
+| Reading it correctly + integration contract | `components/map/MAP_GUIDE.md` |
+| 25 years of Flash Report data (2001-2026) | `data/flash_reports/` |
+| What is in the corpus, and its gaps | `data/flash_reports/CORPUS.md` |
+| Extraction pipeline (download -> verify -> extract) | `flash_pdf/` |
+| Data acquisition & verification report | `docs/PAIMANA_Data_Report.pdf` |
+
+**592,608 project-level rows from 207 monthly Flash Reports, 2001-2026.** This lifts the
+"cannot use two decades of OCMS history" limitation recorded in `04_RISKS_AND_GAPS.md`
+section 2. Caveats: 2019 is absent from MoSPI's archive, and pre-2012 rows carry no ID
+code (name matching only), so the honest line is *project-level observations from 2001,
+reliable per-project tracking from 2013*.
+
+The ~2 GB of source PDFs are **not** in git (GitHub blocks files over 100 MB and the LFS
+free tier is 1 GB). They are reproducible - `flash_pdf/download_all.py` rebuilds the
+corpus from the URLs in `data/flash_reports/manifest_all.csv` - and shared separately as
+a zip.
+
+
 ## Read in this order
 
 | file | what it is |

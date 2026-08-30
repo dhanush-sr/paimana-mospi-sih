@@ -1,0 +1,70 @@
+============================================================================
+1. CORROBORATION AGAINST THE PROBLEM STATEMENT
+============================================================================
+  PS claims (April 2026): 1,981 projects, original cost ~Rs 37.13 lakh crore
+  API April 2026        : 1,981 projects, original cost Rs 37.13 lakh crore
+  -> MATCH: this API is the source the PS quotes
+
+============================================================================
+2. PANEL SHAPE  (watch for onboarding artefacts)
+============================================================================
+  2025-07    791 projects  #############
+  2025-08    800 projects  #############
+  2025-09    794 projects  #############
+  2025-10    820 projects  #############
+  2025-11    823 projects  #############
+  2025-12   1392 projects  #######################
+  2026-01   1702 projects  ############################
+  2026-02   1948 projects  ################################
+  2026-03   1941 projects  ################################
+  2026-04   1981 projects  #################################
+  2026-05   1987 projects  #################################
+  2026-06   1847 projects  ##############################
+  2026-07   1775 projects  #############################
+
+  The ramp from ~790 to ~1,980 is PAIMANA ONBOARDING (projects migrating
+  from OCMS), not real project growth. Treat 2025-07..2025-11 as incomplete;
+  the panel is only trustworthy from about 2026-01 onward.
+
+============================================================================
+3. BASE RATES  (computed, since the API ships these fields empty)
+============================================================================
+
+  --- 2026-04  (n=1,981) ---
+    cost overrun :   589/1076  known ( 54.7%)   [29.7% of all]
+    time overrun :  1267/1627  known ( 77.9%)   [64.0% of all]
+    both         :   490
+    cost overrun %: median 18.9%  p90 89.1%  max 1236%
+    delay months  : median 21.3  p90 72.0  max 300
+
+  --- 2026-07  (n=1,775) ---
+    cost overrun :   535/942   known ( 56.8%)   [30.1% of all]
+    time overrun :  1129/1427  known ( 79.1%)   [63.6% of all]
+    both         :   437
+    cost overrun %: median 19.0%  p90 100.0%  max 1921%
+    delay months  : median 22.5  p90 67.0  max 300
+
+============================================================================
+4. THE PREDICTIVE SIGNAL: DO ESTIMATES ACTUALLY MOVE?
+============================================================================
+  projects with >=3 snapshots : 2,126
+    revised COST changed      : 135 (6.3%)
+    revised DATE changed      : 1,511 (71.1%)
+    neither moved             : 544 (25.6%)
+
+  1,169 observable schedule-slip EVENTS with a timestamp.
+  These are the supervised targets: predict the slip before the month it lands.
+
+  slip events by month:
+    2025-08    54  ##########
+    2025-09    40  ########
+    2025-10    32  ######
+    2025-11    40  ########
+    2025-12    52  ##########
+    2026-01    40  ########
+    2026-02    20  ####
+    2026-03   376  ###########################################################################
+    2026-04   207  #########################################
+    2026-05   139  ###########################
+    2026-06    79  ###############
+    2026-07    90  ##################

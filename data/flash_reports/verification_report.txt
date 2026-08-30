@@ -1,0 +1,82 @@
+==============================================================================
+FLASH  (190 files)  C:\Users\LENOVO\Downloads\SIH2026\PAIMANA\files
+==============================================================================
+  usable          : 160/190
+  total size      : 1690 MB
+  pages           : 60,222 (median 333)
+  PROBLEMS (30):
+    NO_PROJECT_CODES       FR_2001_04_april.pdf  (0.3MB, 18p)
+    NO_PROJECT_CODES       FR_2001_05_may.pdf  (0.3MB, 16p)
+    NO_PROJECT_CODES       FR_2001_06_june.pdf  (0.3MB, 16p)
+    NO_PROJECT_CODES       FR_2001_07_july.pdf  (0.2MB, 16p)
+    NO_PROJECT_CODES       FR_2001_08_august.pdf  (0.3MB, 16p)
+    NO_PROJECT_CODES       FR_2001_09_september.pdf  (0.3MB, 17p)
+    NO_PROJECT_CODES       FR_2001_10_october.pdf  (0.3MB, 17p)
+    NO_PROJECT_CODES       FR_2001_11_november.pdf  (0.3MB, 17p)
+    NO_PROJECT_CODES       FR_2001_12_december.pdf  (0.3MB, 18p)
+    NO_PROJECT_CODES       FR_2002_01_january.pdf  (0.3MB, 17p)
+    NO_PROJECT_CODES       FR_2002_02_february.pdf  (0.3MB, 17p)
+    NO_PROJECT_CODES       FR_2002_03_march.pdf  (0.3MB, 17p)
+    NO_PROJECT_CODES       FR_2002_04_april.pdf  (0.3MB, 17p)
+    NO_PROJECT_CODES       FR_2002_05_may.pdf  (0.3MB, 17p)
+    NO_PROJECT_CODES       FR_2002_06_june.pdf  (0.4MB, 25p)
+    NO_PROJECT_CODES       FR_2002_07_july.pdf  (0.4MB, 22p)
+    NO_PROJECT_CODES       FR_2002_08_august.pdf  (0.4MB, 24p)
+    NO_PROJECT_CODES       FR_2002_09_september.pdf  (0.4MB, 22p)
+    NO_PROJECT_CODES       FR_2002_10_october.pdf  (0.4MB, 22p)
+    NO_PROJECT_CODES       FR_2002_11_november.pdf  (0.4MB, 23p)
+    NO_PROJECT_CODES       FR_2002_12_december.pdf  (0.4MB, 22p)
+    NO_PROJECT_CODES       FR_2003_01_january.pdf  (0.4MB, 23p)
+    NO_PROJECT_CODES       FR_2003_02_february.pdf  (0.4MB, 26p)
+    NO_PROJECT_CODES       FR_2003_03_march.pdf  (0.4MB, 24p)
+    NO_PROJECT_CODES       FR_2007_05_may.pdf  (0.6MB, 36p)
+    NO_PROJECT_CODES       FR_2007_10_october.pdf  (0.7MB, 38p)
+    NO_PROJECT_CODES       FR_2009_06_june.pdf  (0.9MB, 52p)
+    NO_PROJECT_CODES       FR_2009_07_july.pdf  (1.5MB, 60p)
+    NO_PROJECT_CODES       FR_2009_08_august.pdf  (0.9MB, 51p)
+    NO_PROJECT_CODES       FR_2023_12_december.pdf  (0.5MB, 20p)
+
+==============================================================================
+QUARTERLY  (7 files)  C:\Users\LENOVO\Downloads\SIH2026\PAIMANA\files\quarterly
+==============================================================================
+  usable          : 7/7
+  total size      : 129 MB
+  pages           : 5,511 (median 763)
+
+==============================================================================
+REVIEW  (0 files)  C:\Users\LENOVO\Downloads\SIH2026\PAIMANA\files\review
+==============================================================================
+  usable          : 0/0
+  total size      : 0 MB
+
+==============================================================================
+DUPLICATE CONTENT (same file saved under different names)
+==============================================================================
+  none
+
+==============================================================================
+FLASH COVERAGE BY YEAR
+==============================================================================
+  2009  ..#.....####   5/12   missing: 1,2,4,5,6,7,8
+  2010  ############  12/12
+  2011  ############  12/12
+  2012  ############  12/12
+  2013  .###########  11/12   missing: 1
+  2014  ############  12/12
+  2015  ############  12/12
+  2016  ############  12/12
+  2017  ############  12/12
+  2018  #######.....   7/12   missing: 8,9,10,11,12
+  2019  ............   0/12
+  2020  .#####.#####  10/12   missing: 1,7
+  2021  ############  12/12
+  2022  ############  12/12
+  2023  ######.####.  10/12   missing: 7,12
+  2024  #####.###...   8/12   missing: 6,10,11,12
+  2025  .....#......   1/12   missing: 1,2,3,4,5,7,8,9,10,11,12
+
+  span 2009-2025  |  160 monthly reports  |  78% of calendar months
+
+==============================================================================
+VERDICT: 167/197 files usable, 65,733 pages, 1807 MB
+==============================================================================
