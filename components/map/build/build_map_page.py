@@ -6,9 +6,16 @@ opened directly and inspected before anything is committed. Numeric verification
 proved the boundary file is administratively correct; only looking at it proves
 the projection, winding and paths are right.
 
-Colour follows the data-viz reference palette: a single-hue sequential blue ramp
-(100 -> 700) for magnitude, dark steps selected for the dark surface rather than
-flipped, text in ink tokens rather than series colour.
+Colour follows the data-viz reference palette: a single-hue sequential RED ramp
+(100 -> 700) for magnitude. Red reads as risk/danger; the original blue ramp
+tested as "looks like water" in a team review and was replaced. Light and dark
+modes carry separate ramps (dark's anchor flips toward the dark surface and
+brightens toward the high end, rather than reusing light steps on black).
+Blue is freed up entirely as the UI's interaction accent (hover ring,
+selection ring, focus ring) now that it no longer encodes data. Both ramps are
+computed, not eyeballed: build_red_ramp.mjs matches each step's OKLCH
+lightness to the retired blue ramp exactly, rotates hue to the palette's
+categorical red (#e34948), and holds chroma to the sRGB gamut ceiling.
 """
 import io
 import json
@@ -125,8 +132,10 @@ payload = {
     "w": W, "h": H,
 }
 
-RAMP_LIGHT = ["#cde2fb", "#b7d3f6", "#9ec5f4", "#86b6ef", "#6da7ec", "#5598e7",
-              "#3987e5", "#2a78d6", "#256abf", "#1c5cab", "#184f95", "#104281", "#0d366b"]
+RAMP_LIGHT = ["#fdd5d0", "#ffbeb7", "#f7aba4", "#ea9a93", "#e4857e", "#dd716a",
+              "#d75853", "#c74845", "#b13f3c", "#9e3432", "#892b2a", "#762221", "#621b1a"]
+RAMP_DARK = ["#391917", "#4a1e1c", "#5d2220", "#702725", "#832a29", "#972e2d",
+             "#ab3131", "#c03436", "#cf4040", "#de4e4c", "#ec5b57", "#fa6863", "#fc8079"]
 
 html = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
@@ -137,18 +146,21 @@ html = """<!doctype html>
   color-scheme:light;
   --surface:#fcfcfb; --plane:#f9f9f7; --ink:#0b0b0b; --ink2:#52514e;
   --line:#e3e3df; --null:#ececea; --stroke:#fcfcfb;
+  --accent:#2a78d6; --accent-wash:rgba(42,120,214,.14);
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     color-scheme:dark;
     --surface:#1a1a19; --plane:#0d0d0d; --ink:#fff; --ink2:#c3c2b7;
     --line:#2e2e2c; --null:#232322; --stroke:#1a1a19;
+    --accent:#3987e5; --accent-wash:rgba(57,135,229,.22);
   }
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
   --surface:#1a1a19; --plane:#0d0d0d; --ink:#fff; --ink2:#c3c2b7;
   --line:#2e2e2c; --null:#232322; --stroke:#1a1a19;
+  --accent:#3987e5; --accent-wash:rgba(57,135,229,.22);
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--plane);color:var(--ink);
@@ -159,19 +171,34 @@ h1{font-size:19px;margin:0 0 2px;letter-spacing:-.01em}
 .controls{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 button.m{padding:6px 11px;border:1px solid var(--line);background:var(--surface);
   color:var(--ink2);border-radius:7px;cursor:pointer;font:inherit;font-size:12.5px}
-button.m[aria-pressed="true"]{background:#2a78d6;border-color:#2a78d6;color:#fff}
-button.m:focus-visible{outline:2px solid #2a78d6;outline-offset:2px}
+button.m[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+button.m:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px}
 @media(max-width:900px){.grid{grid-template-columns:1fr}}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
 svg{width:100%;height:auto;display:block}
-path.st{stroke:var(--stroke);stroke-width:.6;cursor:pointer;transition:opacity .12s}
-path.st:hover{opacity:.82}
-path.st.sel{stroke:var(--ink);stroke-width:1.6}
-path.st:focus-visible{outline:none;stroke:#2a78d6;stroke-width:2}
+path.st{stroke:var(--stroke);stroke-width:.6;cursor:pointer;
+  transition:stroke .12s,stroke-width .12s,filter .12s,opacity .12s}
+path.st:hover{stroke:var(--accent);stroke-width:2;filter:brightness(1.1)}
+path.st.sel{stroke:var(--accent);stroke-width:3;
+  filter:drop-shadow(0 0 4px var(--accent-wash)) brightness(1.08)}
+path.st:focus-visible{outline:none;stroke:var(--accent);stroke-width:2.6}
+svg.has-sel path.st:not(.sel):not(:hover){opacity:.5}
 .legend{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11.5px;color:var(--ink2)}
 .legend .bar{display:flex;height:11px;flex:1;border-radius:3px;overflow:hidden}
 .legend .bar i{flex:1}
+.legendCap{font-size:11px;color:var(--ink2);margin-top:5px}
+.dtHead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px}
+.dtKind{font-size:11px;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.dtName{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.dtClose{border:1px solid var(--line);background:var(--surface);color:var(--ink2);
+  border-radius:7px;width:26px;height:26px;cursor:pointer;font:inherit;line-height:1;flex:none}
+.dtClose:hover{border-color:var(--accent);color:var(--accent)}
+.dtGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.dtStat{border:1px solid var(--line);border-radius:9px;padding:8px 10px}
+.dtStat .lb{font-size:10.5px;color:var(--ink2);margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.dtStat .vl{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+.dtStat .dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}
 #tip{position:fixed;pointer-events:none;background:var(--surface);color:var(--ink);
   border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:12.5px;
   box-shadow:0 8px 24px rgba(0,0,0,.16);opacity:0;transition:opacity .1s;max-width:270px;z-index:9}
@@ -182,15 +209,16 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 th,td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line)}
 th{color:var(--ink2);font-weight:600}
 td.n{text-align:right;font-variant-numeric:tabular-nums}
-tr.sel{background:rgba(42,120,214,.10)}
+tr.sel{background:var(--accent-wash)}
 #insetWrap{margin-top:14px;border-top:1px solid var(--line);padding-top:11px}
 .inset-hd{font-size:11px;color:var(--ink2);margin-bottom:7px;letter-spacing:.02em}
 .inset{display:flex;flex-wrap:wrap;gap:7px}
 .tile{display:flex;flex-direction:column;gap:3px;align-items:center;cursor:pointer;
   border:1px solid var(--line);border-radius:8px;padding:6px 8px 5px;background:var(--surface);min-width:64px}
-.tile:hover{border-color:#2a78d6}
-.tile.sel{border-color:var(--ink);border-width:2px;padding:5px 7px 4px}
-.tile:focus-visible{outline:2px solid #2a78d6;outline-offset:2px}
+.tile:hover{border-color:var(--accent)}
+.tile.sel{border-color:var(--accent);border-width:2px;padding:5px 7px 4px;
+  box-shadow:0 0 0 3px var(--accent-wash)}
+.tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .tile .sw{width:100%;height:15px;border-radius:3px}
 .tile .nm{font-size:9.5px;color:var(--ink2);text-align:center;line-height:1.15;max-width:74px}
 .tile .vl{font-size:11px;font-variant-numeric:tabular-nums}
@@ -207,8 +235,16 @@ details{margin-top:14px}summary{cursor:pointer;color:var(--ink2);font-size:12.5p
     <svg id="map" viewBox="0 0 __W__ __H__" role="img" aria-labelledby="mt"></svg>
     <title id="mt">Choropleth of Indian states and union territories</title>
     <div class="legend"><span id="lo"></span><span class="bar" id="lb"></span><span id="lh"></span></div>
+    <p class="legendCap">Lighter = lower risk &nbsp;&middot;&nbsp; darker red = higher risk</p>
     <div id="insetWrap"><div class="inset-hd">Too small to see on the map</div>
       <div class="inset" id="inset"></div></div>
+  </div>
+  <div class="card" id="detailCard" hidden>
+    <div class="dtHead">
+      <div><div class="dtKind" id="dtKind"></div><div class="dtName" id="dtName"></div></div>
+      <button class="dtClose" id="dtClose" type="button" aria-label="Clear selection">&#10005;</button>
+    </div>
+    <div class="dtGrid" id="dtGrid"></div>
   </div>
   <div class="card">
     <div style="font-weight:600;margin-bottom:8px;font-size:13px" id="rt">Ranked</div>
@@ -223,11 +259,14 @@ details{margin-top:14px}summary{cursor:pointer;color:var(--ink2);font-size:12.5p
 <script id="data" type="application/json">__DATA__</script>
 <script>
 const D=JSON.parse(document.getElementById('data').textContent);
-const RAMP=__RAMP__;
+const RAMP_LIGHT=__RAMP_LIGHT__, RAMP_DARK=__RAMP_DARK__;
+// Risk is the headline, not raw activity - default view leads with the metric
+// that actually answers "what's the main problem", not "where is stuff".
 const METRICS=[
+ {k:'delayed_pct',    label:'% behind schedule',   fmt:v=>v==null?'-':v.toFixed(1)+'%'},
+ {k:'cost_over_pct',  label:'% cost overrun',      fmt:v=>v==null?'-':v.toFixed(1)+'%'},
  {k:'projects',       label:'Projects',            fmt:v=>v.toLocaleString('en-IN')},
  {k:'cost_cr',        label:'Exposure (Rs cr)',    fmt:v=>'\\u20b9'+Math.round(v).toLocaleString('en-IN')},
- {k:'delayed_pct',    label:'% behind schedule',   fmt:v=>v==null?'-':v.toFixed(1)+'%'},
  {k:'newly_slipped',  label:'Slipped last month',  fmt:v=>v.toLocaleString('en-IN')},
  {k:'median_delay_months',label:'Median delay (mo)',fmt:v=>v==null?'-':v.toFixed(1)}
 ];
@@ -243,6 +282,17 @@ document.getElementById('meth').textContent = D.meta.derivation +
  'using Census district geometry (Ladakh = Leh + Kargil), and Dadra & Nagar Haveli merged with '+
  'Daman & Diu. Verified: 36 features, 36/36 names matching MoSPI GetStateList, northern extent 37.078N.';
 
+function isDark(){
+  const t=document.documentElement.getAttribute('data-theme');
+  if(t==='dark')return true;
+  if(t==='light')return false;
+  return matchMedia('(prefers-color-scheme: dark)').matches;
+}
+function ramp(){return isDark()?RAMP_DARK:RAMP_LIGHT;}
+function statusColor(v,warn,crit){
+  if(v==null||isNaN(v))return null;
+  return v>=crit?'#d03b3b':v>=warn?'#fab219':'#0ca30c';
+}
 function vals(){return Object.keys(D.paths).map(s=>S[s]?S[s][cur.k]:null);}
 function scale(){
   const v=vals().filter(x=>x!=null&&!isNaN(x)).sort((a,b)=>a-b);
@@ -250,18 +300,24 @@ function scale(){
 }
 function colorOf(v,sc){
   if(v==null||isNaN(v))return 'var(--null)';
+  const R=ramp();
   const t=sc.hi===sc.lo?0.5:(v-sc.lo)/(sc.hi-sc.lo);
-  return RAMP[Math.max(0,Math.min(RAMP.length-1,Math.round(t*(RAMP.length-1))))];
+  return R[Math.max(0,Math.min(R.length-1,Math.round(t*(R.length-1))))];
 }
 function draw(){
   const sc=scale();
+  map.classList.toggle('has-sel', !!sel);
   map.innerHTML=Object.entries(D.paths).map(([name,d])=>{
     const m=S[name], v=m?m[cur.k]:null;
     return `<path class="st${sel===name?' sel':''}" d="${d}" fill="${colorOf(v,sc)}"
       tabindex="0" role="button" data-s="${name}"
       aria-label="${name}, ${D.kind[name]}: ${m?cur.fmt(v):'no data'}"></path>`;
   }).join('');
-  document.getElementById('lb').innerHTML=RAMP.map(c=>`<i style="background:${c}"></i>`).join('');
+  if(sel){
+    const p=map.querySelector(`path.st[data-s="${CSS.escape(sel)}"]`);
+    if(p)map.appendChild(p);
+  }
+  document.getElementById('lb').innerHTML=ramp().map(c=>`<i style="background:${c}"></i>`).join('');
   document.getElementById('lo').textContent=cur.fmt(sc.lo);
   document.getElementById('lh').textContent=cur.fmt(sc.hi);
   document.getElementById('ch').textContent=cur.label;
@@ -279,6 +335,26 @@ function draw(){
     .sort((a,b)=>(b[1]??-Infinity)-(a[1]??-Infinity));
   document.getElementById('tb').innerHTML=rows.map(([s,v])=>
     `<tr class="${sel===s?'sel':''}" data-s="${s}"><td>${s}</td><td class="n">${v==null?'-':cur.fmt(v)}</td></tr>`).join('');
+  renderDetail();
+}
+function renderDetail(){
+  const card=document.getElementById('detailCard');
+  if(!sel){card.hidden=true;return;}
+  card.hidden=false;
+  const m=S[sel];
+  document.getElementById('dtKind').textContent=D.kind[sel];
+  document.getElementById('dtName').textContent=sel;
+  const dot=c=>c?`<span class="dot" style="background:${c}"></span>`:'';
+  const stats = !m ? [['No monitored projects','-',null]] : [
+    ['Projects monitored', m.projects.toLocaleString('en-IN'), null],
+    ['Exposure', '\\u20b9'+Math.round(m.cost_cr).toLocaleString('en-IN')+' cr', null],
+    ['% behind schedule', m.delayed_pct==null?'-':m.delayed_pct.toFixed(1)+'%', statusColor(m.delayed_pct,40,66)],
+    ['% cost overrun', m.cost_over_pct==null?'-':m.cost_over_pct.toFixed(1)+'%', statusColor(m.cost_over_pct,40,66)],
+    ['Median delay', m.median_delay_months==null?'-':m.median_delay_months.toFixed(1)+' mo', null],
+    ['Slipped last month', m.newly_slipped.toLocaleString('en-IN'), null],
+  ];
+  document.getElementById('dtGrid').innerHTML = stats.map(([lb,vl,c])=>
+    `<div class="dtStat"><div class="lb">${dot(c)}${lb}</div><div class="vl">${vl}</div></div>`).join('');
 }
 function show(name,x,y){
   const m=S[name];
@@ -313,6 +389,7 @@ document.getElementById('inset').addEventListener('mouseleave',hide);
 document.getElementById('inset').addEventListener('keydown',e=>{
   const t=e.target.closest('.tile');
   if(t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();sel=sel===t.dataset.s?null:t.dataset.s;draw();}});
+document.getElementById('dtClose').addEventListener('click',()=>{sel=null;draw();});
 document.getElementById('ctl').innerHTML=METRICS.map((m,i)=>
   `<button class="m" aria-pressed="${i===0}" data-i="${i}">${m.label}</button>`).join('');
 document.getElementById('ctl').addEventListener('click',e=>{
@@ -321,12 +398,14 @@ document.getElementById('ctl').addEventListener('click',e=>{
   [...document.querySelectorAll('button.m')].forEach(x=>x.setAttribute('aria-pressed',x===b));
   draw();
 });
+if(matchMedia)matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw);
 draw();
 </script></body></html>"""
 
 html = (html.replace("__W__", str(W)).replace("__H__", str(H))
         .replace("__DATA__", json.dumps(payload, separators=(",", ":")))
-        .replace("__RAMP__", json.dumps(RAMP_LIGHT)))
+        .replace("__RAMP_LIGHT__", json.dumps(RAMP_LIGHT))
+        .replace("__RAMP_DARK__", json.dumps(RAMP_DARK)))
 open(OUT, "w", encoding="utf-8").write(html)
 print("wrote", OUT, "(%.2f MB)" % (os.path.getsize(OUT) / 1048576))
 print("states with geometry:", len(paths), "| states with metrics:", len(met["states"]))
