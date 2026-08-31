@@ -199,6 +199,16 @@ svg.has-sel path.st:not(.sel):not(:hover){opacity:.5}
 .dtStat .lb{font-size:10.5px;color:var(--ink2);margin-bottom:3px;display:flex;align-items:center;gap:5px}
 .dtStat .vl{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
 .dtStat .dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}
+.hd{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.themeBtn{border:1px solid var(--line);background:var(--surface);color:var(--ink2);
+  border-radius:9px;width:34px;height:34px;cursor:pointer;font-size:15px;flex:none;
+  display:flex;align-items:center;justify-content:center;margin-top:2px}
+.themeBtn:hover{border-color:var(--accent);color:var(--accent)}
+.themeBtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.dtTitleRow{display:flex;align-items:flex-start;gap:9px}
+.dtBadge{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:12px;flex:none;margin-top:2px}
+.dtStatusText{font-size:11px;font-weight:600;color:var(--ink2);margin-top:3px}
 #tip{position:fixed;pointer-events:none;background:var(--surface);color:var(--ink);
   border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:12.5px;
   box-shadow:0 8px 24px rgba(0,0,0,.16);opacity:0;transition:opacity .1s;max-width:270px;z-index:9}
@@ -227,8 +237,11 @@ tr.sel{background:var(--accent-wash)}
 details{margin-top:14px}summary{cursor:pointer;color:var(--ink2);font-size:12.5px}
 </style></head><body>
 <div class="wrap">
-<h1>Where the delivery risk sits</h1>
-<p class="sub" id="sub"></p>
+<div class="hd">
+  <div><h1>Where the delivery risk sits</h1><p class="sub" id="sub"></p></div>
+  <button class="themeBtn" id="themeToggle" type="button" aria-label="Toggle light or dark theme">
+    <span id="themeIcon">☀</span></button>
+</div>
 <div class="controls" id="ctl" role="group" aria-label="Choose metric"></div>
 <div class="grid">
   <div class="card">
@@ -241,7 +254,11 @@ details{margin-top:14px}summary{cursor:pointer;color:var(--ink2);font-size:12.5p
   </div>
   <div class="card" id="detailCard" hidden>
     <div class="dtHead">
-      <div><div class="dtKind" id="dtKind"></div><div class="dtName" id="dtName"></div></div>
+      <div class="dtTitleRow">
+        <span class="dtBadge" id="dtBadge"></span>
+        <div><div class="dtKind" id="dtKind"></div><div class="dtName" id="dtName"></div>
+          <div class="dtStatusText" id="dtStatusText"></div></div>
+      </div>
       <button class="dtClose" id="dtClose" type="button" aria-label="Clear selection">&#10005;</button>
     </div>
     <div class="dtGrid" id="dtGrid"></div>
@@ -337,6 +354,12 @@ function draw(){
     `<tr class="${sel===s?'sel':''}" data-s="${s}"><td>${s}</td><td class="n">${v==null?'-':cur.fmt(v)}</td></tr>`).join('');
   renderDetail();
 }
+function tierOf(v){
+  if(v==null||isNaN(v))return null;
+  if(v>=66)return{c:'#d03b3b',label:'High risk',icon:'\u26a0'};
+  if(v>=40)return{c:'#fab219',label:'Elevated risk',icon:'\u26a0'};
+  return{c:'#0ca30c',label:'On track',icon:'\u2713'};
+}
 function renderDetail(){
   const card=document.getElementById('detailCard');
   if(!sel){card.hidden=true;return;}
@@ -344,6 +367,16 @@ function renderDetail(){
   const m=S[sel];
   document.getElementById('dtKind').textContent=D.kind[sel];
   document.getElementById('dtName').textContent=sel;
+  const badge=document.getElementById('dtBadge'), st=document.getElementById('dtStatusText');
+  const worst=m?Math.max(m.delayed_pct??-1,m.cost_over_pct??-1):null;
+  const tier=tierOf(worst);
+  if(tier){
+    badge.hidden=false;badge.textContent=tier.icon;
+    badge.style.background=tier.c+'26';badge.style.color=tier.c;
+    st.textContent=tier.label;
+  }else{
+    badge.hidden=true;badge.textContent='';st.textContent=m?'':'No data';
+  }
   const dot=c=>c?`<span class="dot" style="background:${c}"></span>`:'';
   const stats = !m ? [['No monitored projects','-',null]] : [
     ['Projects monitored', m.projects.toLocaleString('en-IN'), null],
@@ -398,7 +431,22 @@ document.getElementById('ctl').addEventListener('click',e=>{
   [...document.querySelectorAll('button.m')].forEach(x=>x.setAttribute('aria-pressed',x===b));
   draw();
 });
-if(matchMedia)matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw);
+function loadTheme(){try{return localStorage.getItem('paimana_map_theme');}catch(e){return null;}}
+function saveTheme(t){try{localStorage.setItem('paimana_map_theme',t);}catch(e){}}
+function updateThemeIcon(){document.getElementById('themeIcon').textContent=isDark()?'\u263e':'\u2600';}
+(function initTheme(){
+  const t=loadTheme();
+  if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);
+})();
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const next=isDark()?'light':'dark';
+  saveTheme(next);
+  document.documentElement.setAttribute('data-theme',next);
+  updateThemeIcon();
+  draw();
+});
+updateThemeIcon();
+if(matchMedia)matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{updateThemeIcon();draw();});
 draw();
 </script></body></html>"""
 
